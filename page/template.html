@@ -1,0 +1,312 @@
+<script type="text/html" class="backboneTemplate" id="list">
+	<div class="wrapper">
+		<div id="proList" style="background:#fff;padding:10px;">
+			<h2>搜索</h2>
+			<div class="input-group" style="margin-bottom:20px">
+				<span class="input-group-addon">
+					<span class="glyphicon glyphicon-search" id="search"></span>
+				</span>
+				<input type="text" class="form-control" id="searchBox" placeholder="项目名称 / 经办人" value="<%= keyword %>">
+			</div>
+            <div id="searchList">
+                <p style="font-size:12px;color:#666">记录总数：
+                    <span style="font-weight:bold" id="totalCount"></span>
+                </p>
+                <table class="table table-hover list-table">
+                    <thead>
+                        <tr style="background:#eee;">
+                            <th style="width:78px;">类型</th>
+                            <th>名称</th>
+                            <th style="width:155px;">标签</th>
+                            <th style="width:155px;">经办人</th>
+                            <th style="width:179px;">更新时间</th>
+                        </tr>
+                    </thead>
+                    <tbody id="listTbody"></tbody>
+                </table>
+                <div id="paging"></div>
+            </div>
+		</div>
+	</div>
+</script>
+
+<script type="text/html" class="backboneTemplate" id="listData">
+    <% _.each(items,function(item,key){ %>
+    <tr>
+        <td><%= item.proClass%></td>
+        <td>
+            <a href="#item/<%= item.id%>" class="itemLink">
+                <span class="proName"><%= item.proName %></span>
+            </a>
+        </td>
+        <td>
+            <% _.map(item.tag,function(tag,key){%>
+					    <span class="label
+					    <% if(tag == 'Online'){ %>tag-green<% } %>
+					    <% if(tag == 'Offline'){ %>tag-blue<% } %>
+					    <% if(tag == 'Mobile'){ %>tag-pink<% } %>
+					    " style="font-size:12px"><%= tag%></span>
+            <%})%>
+        </td>
+        <td><%= item.person[0]['value']%></td>
+        <td style="color:#999"><%= item.submitTime%></td>
+    </tr>
+    <% }) %>
+</script>
+
+<script type="text/html" class="backboneTemplate" id="detail">
+	<div class="wrapper">
+		<div class="in-wrapper" style="margin-top:28px;box-shadow:0px 4px 2px #888888;">
+			<div class="btn-group">
+				<a href="javascript:;" class="edit btn btn-default" data-target="proName">Edit</a>
+				<a href="javascript:;" class="save btn btn-default" data-target="proName">Save</a>
+			</div>
+			<img src="img/<%= item.proTypeIcon%>" title="<%= item.proClass%>" class="hImg">
+			<div style="margin-left:80px;font-size:12px">
+				<h2 id="proName"><%= item.proName%></h2>
+                <% _.map(item.tag,function(tag,key){%>
+					    <span class="label
+					    <% if(tag == 'Online'){ %>tag-green<% } %>
+					    <% if(tag == 'Offline'){ %>tag-blue<% } %>
+					    <% if(tag == 'Mobile'){ %>tag-pink<% } %>
+					    "><%= tag%></span>
+                <%})%>&emsp;&emsp;
+				<span>更新于：<%= item.submitTime%></span>
+			</div>
+		</div>
+		<div class="in-wrapper">
+			<div class="itemInfo">
+				<div class="clearfix">
+					<div class="btn-group">
+						<a href="javascript:;" class="edit btn btn-default" data-target="proDes">Edit</a>
+						<a href="javascript:;" class="save btn btn-default" data-target="proDes">Save</a>
+					</div>
+					<h3>项目简介</h3>
+				</div>
+				<div id="proDes" class="content"><%= item.proDes%></div>
+			</div>
+			<div class="itemInfo">
+				<div class="clearfix">
+					<div class="btn-group">
+						<a href="javascript:;" class="editPerson btn btn-default" data-target="person">Edit</a>
+						<a href="javascript:;" class="savePerson btn btn-default" data-target="person">Save</a>
+					</div>
+					<h3>项目成员</h3>
+				</div>
+				<div id="person" class="content">
+					<% _.map(item.person,function(person){ %>
+					<p>
+						<i style="display:inline-block;width:60px;text-align:right;margin-right:20px;"><%= person.group%>：</i>
+						<span style="display:inline-block;width:300px;"><%= person.value%></span>
+					</p>
+					<%})%>
+				</div>
+			</div>
+			<div class="itemInfo">
+				<h3>前端Hifi原型</h3>
+				<div class="subItemInfo">
+					<div class="clearfix">
+						<div class="btn-group">
+							<a href="javascript:;" class="edit btn btn-default" data-target="cssLink">Edit</a>
+							<a href="javascript:;" class="save btn btn-default" data-target="cssLink">Save</a>
+						</div>
+						<h4>原型地址</h4>
+					</div>
+					<div id="cssLink" class="content link" style="padding-left:20px"><%= item.cssLink%></div>
+				</div>
+				<div class="subItemInfo">
+					<div class="clearfix">
+						<div class="btn-group">
+							<a href="javascript:;" class="edit btn btn-default" data-target="repository">Edit</a>
+							<a href="javascript:;" class="save btn btn-default" data-target="repository">Save</a>
+						</div>
+						<h4>仓库分支</h4>
+					</div>
+					<div id="repository" class="content branch" style="padding-left:20px;"><%= item.repository%></div>
+				</div>
+				<div class="subItemInfo">
+					<div class="clearfix">
+						<div class="btn-group">
+							<a href="javascript:;" class="edit btn btn-default" data-target="picsLink">Edit</a>
+							<a href="javascript:;" class="save btn btn-default" data-target="picsLink">Save</a>
+						</div>
+						<h4>图片发布地址</h4>
+					</div>
+					<div id="picsLink" class="content link" style="padding-left:20px"><%= item.picsLink%></div>
+				</div>
+			</div>
+			<div class="itemInfo">
+				<div class="clearfix">
+					<div class="btn-group">
+						<a href="javascript:;" class="edit btn btn-default" data-target="lowfiLink">Edit</a>
+						<a href="javascript:;" class="save btn btn-default" data-target="lowfiLink">Save</a>
+					</div>
+					<h3>Lowfi交互原型</h3>
+				</div>
+				<div id="lowfiLink" class="content link"><%= item.lowfiLink%></div>
+			</div>
+			<div class="itemInfo">
+				<div class="clearfix">
+					<div class="btn-group">
+						<a href="javascript:;" class="editVI btn btn-default" data-target="viLink">Edit</a>
+						<a href="javascript:;" class="saveVI btn btn-default" data-target="viLink">Save</a>
+					</div>
+					<h3>视觉稿</h3>
+				</div>
+                <div id="uploadBox"></div>
+			</div>
+		</div>
+	</div>
+</script>
+
+<script type="text/html" class="backboneTemplate" id="add">
+	<div class="wrapper">
+		<div class="in-wrapper" style="margin-top:28px;box-shadow:0px 4px 2px #888888;">
+			<img src="img/newDoc.png" style="float:left; width:56px;">
+			<div style="margin-left:80px;font-size:12px">
+				<h2>新项目文档</h2>
+			</div>
+		</div>
+		<div class="in-wrapper">
+			<table class="table table-responsive add-table">
+				<tr>
+					<th>业务线类型</th>
+					<td>
+						<div id="tags">
+							<label class="checkbox-inline">
+								<input type="checkbox" data-value="Online">
+								Online
+							</label>&emsp;
+							<label class="checkbox-inline">
+								<input type="checkbox" data-value="Offline">
+								Offline
+							</label>
+							<label class="checkbox-inline">&emsp;
+								<input type="checkbox" data-value="Mobile">
+								Mobile
+							</label>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<th>项目类型/名称</th>
+					<td>
+						<select class="form-control" id="proClass" style="width:90px;display: inline-block;">
+							<option value="变更"> 变更
+							<option value="项目"> 项目
+							<option value="团队"> 团队
+						</select>
+						<div contenteditable id="editProName" style="width: 710px;display: inline-block;"></div>
+					</td>
+				</tr>
+				<tr>
+					<th>项目简介</th>
+					<td>
+						<div contenteditable id="editDes" style="height:6em;"></div>
+					</td>
+				</tr>
+				<tr>
+					<th>项目成员</th>
+					<td>
+						<div id="editPerson">
+							<label>
+								<i>CSS</i>
+								<input type="text" class="form-control" data-group="CSS">
+							</label>
+							<label>
+								<i>VI</i>
+								<input type="text" class="form-control" data-group="VI">
+							</label>
+							<label>
+								<i>UI</i>
+								<input type="text" class="form-control" data-group="UI">
+							</label>
+							<label>
+								<i>PM</i>
+								<input type="text" class="form-control" data-group="PM">
+							</label>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<th>前端Hifi原型</th>
+					<td>
+						<div id="editCssLink" contenteditable></div>
+					</td>
+				</tr>
+				<tr>
+					<th>图片发布地址</th>
+					<td>
+						<div id="editPicsLink" contenteditable></div>
+					</td>
+				</tr>
+				<tr>
+					<th>仓库分支</th>
+					<td>
+						<div contenteditable id="editRepository"></div>
+					</td>
+				</tr>
+				<tr>
+					<th>UI</th>
+					<td>
+						<div id="editLowfiLink" contenteditable></div>
+					</td>
+				</tr>
+                <tr>
+                    <th>VI</th>
+                    <td id="uploadBox">
+                    </td>
+                </tr>
+			</table>
+			<div id="isConfirmBtns">
+				<a href="javascript:;" class="btn btn-primary" id="addItemBtn">确定</a>&emsp;&emsp;
+				<a href="#list/1" class="btn btn-default">取消</a>
+			</div>
+		</div>
+	</div>
+</script>
+
+<script type="text/html" class="backboneTemplate" id="header">
+    <div style="margin-left:200px;">
+        <img src="img/logo.png" />
+        <h1 class="m-title">Projects Docs</h1>
+        <a class="m-list-link" href="<%= pageLink %>"><%= listPageTitle %></a>
+        <a href="<%= hash %>" class="label label-primary btn-add">
+            <span class="glyphicon <%= ico%>"> </span><%= title %>
+        </a>
+    </div>
+</script>
+
+<script type="text/html" class="backboneTemplate" id="upload">
+    <input type="file" id="files" multiple style="display:block;margin: 5px 0 10px;">
+    <div id="editVI" class="viBox-wrap"></div>
+</script>
+
+<script type="text/html" class="template" id="uploadCreateData">
+	<div class="viBox uploadifive-queue-item">
+		<a href="" target="_blank" class="imgA">
+			<div class="img-wrap">
+				<img src="" class="viImg" title="">
+			</div>
+			<div class="picName"><span class="filename"></span><span class="fileinfo"></span></div>
+            <div class="progress">
+                <div class="progress-bar"></div>
+            </div>
+		</a>
+		<a href="javascript:;" class="glyphicon glyphicon-remove" data-path=""></a>
+	</div>
+</script>
+
+<script type="text/html" class="backboneTemplate" id="uploadEditData">
+    <a href="<%= path %>" target="_blank" class="imgA">
+        <div class="img-wrap">
+            <img src="<%= thumbnail %>" class="viImg" title="<%= name %>">
+        </div>
+        <div class="picName"><%= name %></div>
+		<div class="progress">
+			<div class="progress-bar" style="width: 100%;"></div>
+		</div>
+    </a>
+    <a href="javascript:;" class="glyphicon glyphicon-remove <% if(!isEdit){ %> hidden <% } %>" data-path="<%= path %>"></a>
+</script>
+
